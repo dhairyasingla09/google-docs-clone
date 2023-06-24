@@ -5,6 +5,7 @@ import { io } from "socket.io-client"
 import { useParams } from "react-router-dom"
 
 const SAVE_INTERVAL_MS = 2000
+//custom toolbar, can add more functions from quill
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
   [{ font: [] }],
@@ -39,7 +40,7 @@ export default function TextEditor() {
       quill.enable()
     })
 
-    socket.emit("get-document", documentId)
+    socket.emit("get-document", documentId)//sends document id so we can edit in that document only
   }, [socket, quill, documentId])
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function TextEditor() {
     if (socket == null || quill == null) return
 
     const handler = delta => {
-      quill.updateContents(delta)
+      quill.updateContents(delta)//run the changes on code
     }
     socket.on("receive-changes", handler)
 
@@ -67,12 +68,15 @@ export default function TextEditor() {
     }
   }, [socket, quill])
 
+  
+  //detecting changes in quill
   useEffect(() => {
     if (socket == null || quill == null) return
-
-    const handler = (delta, oldDelta, source) => {
-      if (source !== "user") return
-      socket.emit("send-changes", delta)
+    
+    const handler = (delta, oldDelta, source) => {//delta=changes in the document, not all document
+      //sources determines who made the changes, user/quill-library
+      if (source !== "user") return //only return if the changes not made by user
+      socket.emit("send-changes", delta)//emit message from client to server
     }
     quill.on("text-change", handler)
 
@@ -81,6 +85,7 @@ export default function TextEditor() {
     }
   }, [socket, quill])
 
+  //solving the problem of multiple toolbars by using useCallback instead of useEffect
   const wrapperRef = useCallback(wrapper => {
     if (wrapper == null) return
 
@@ -92,7 +97,7 @@ export default function TextEditor() {
       modules: { toolbar: TOOLBAR_OPTIONS },
     })
     q.disable()
-    q.setText("Loading...")
+    q.setText("Loading the Document!")
     setQuill(q)
   }, [])
   return <div className="container" ref={wrapperRef}></div>
