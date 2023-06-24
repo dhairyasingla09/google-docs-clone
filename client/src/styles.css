@@ -7,6 +7,7 @@ body {
   margin: 0;
 }
 
+/*editor*/
 .container .ql-editor {
   width: 8.5in;
   min-height: 11in;
@@ -16,12 +17,14 @@ body {
   background-color: white;
 }
 
+/*A4 page*/
 .container .ql-container.ql-snow {
   border: none;
   display: flex;
   justify-content: center;
 }
 
+/*Toolbar*/
 .container .ql-toolbar.ql-snow {
   display: flex;
   justify-content: center;
@@ -33,10 +36,12 @@ body {
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
 }
 
+/*for margin in printing*/
 @page {
   margin: 1in;
 }
 
+/*Printing Specific Styles*/
 @media print {
   body {
     background: none;
